@@ -18,7 +18,8 @@ if ($num_rows > 0) {
     $rows = $db->db_fetch_array($result);
     
         unset($_POST); // hapus post form
-        $_SESSION['apriori_parfum_id'] = $rows['id']; // mengisi session
+        // $_SESSION['apriori_parfum_id'] = $rows['id']; // mengisi session
+        $_SESSION['apriori_parfum_id'] = "1"; // mengisi session
         $_SESSION['apriori_parfum_username'] = $rows['username'];
         $_SESSION['apriori_parfum_level'] = $rows['level'];
 
