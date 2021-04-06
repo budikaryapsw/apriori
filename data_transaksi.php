@@ -29,8 +29,6 @@ if(isset($_POST['submit'])){
       // var_dump(ASU);die();
         $baris = $data->rowcount($sheet_index=0);
         $column = $data->colcount($sheet_index=0);
-        var_dump($baris."-".$column);
-        die();
         //import data excel dari baris kedua, karena baris pertama adalah nama kolom
         // $temp_date = $temp_produk = "";
         for ($i=2; $i<=$baris; $i++) {
@@ -263,4 +261,3 @@ function get_produk_to_in($produk){
 }
 
 ?>
-  
