@@ -72,7 +72,69 @@ function is_exist_variasi_itemset($array_item1, $array_item2, $item1, $item2) {
     
     return false;
 }
+function mining_grafik($db_object,$start_date){
+    // $output=array();
+    $ins2=array();
+    $sql_trans = "SELECT * FROM transaksi 
+        WHERE transaction_date = '$start_date' ";
+    $result_trans = $db_object->db_query($sql_trans);
+    $dataTransaksi = $item_list = array();
+    $jumlah_transaksi = $db_object->db_num_rows($result_trans);
+    // $min_support_relative = ($min_support/$jumlah_transaksi)*100; 
+    $x=0;
+    while($myrow = $db_object->db_fetch_array($result_trans)){
+        $dataTransaksi[$x]['tanggal'] = $myrow['transaction_date'];
+        $item_produk = $myrow['produk'].",";
+        //mencegah ada jarak spasi
+        $item_produk = str_replace(" ,", ",", $item_produk);
+        $item_produk = str_replace("  ,", ",", $item_produk);
+        $item_produk = str_replace("   ,", ",", $item_produk);
+        $item_produk = str_replace("    ,", ",", $item_produk);
+        $item_produk = str_replace(", ", ",", $item_produk);
+        $item_produk = str_replace(",  ", ",", $item_produk);
+        $item_produk = str_replace(",   ", ",", $item_produk);
+        $item_produk = str_replace(",    ", ",", $item_produk);
+        
+        $dataTransaksi[$x]['produk'] = $item_produk;
+        $produk = explode(",", $myrow['produk']);
+        //all items
+        foreach ($produk as $key => $value_produk) {
+            //if(!in_array($value_produk, $item_list)){
+            if(!in_array(strtoupper($value_produk), array_map('strtoupper', $item_list))){
+                if(!empty($value_produk)){
+                    $item_list[] = $value_produk;
+                }
+            }
+        }
+        $x++;
+    }
 
+    $itemset1 = $jumlahItemset1 = $supportItemset1 = $valueIn = array();
+    $x=1;
+    foreach ($item_list as $key => $item) {
+        $jumlah = jumlah_itemset1($dataTransaksi, $item);
+        // $support = ($jumlah/$jumlah_transaksi) * 100;
+        // $lolos = ($support>=$min_support_relative)?"1":"0";
+        $valueIn[] = "('$item','$jumlah')";
+        $itemset1[] = $item;//item yg lolos itemset1
+        $jumlahItemset1[] = $jumlah;
+        // $supportItemset1[] = $support;
+        // if($lolos){
+            
+        // }
+        // echo "<tr>";
+        // echo "<td>" . $x . "</td>";
+        // echo "<td>" . $item . "</td>";
+        // echo "<td>" . $jumlah . "</td>";
+        // echo "<td>" . price_format($support) . "</td>";
+        // echo "<td>" . (($lolos==1)?"Lolos":"Tidak Lolos") . "</td>";
+        // echo "</tr>";
+        $ins2[$x]['item']=$item;  
+        $ins2[$x]['jumlah']=$jumlah; 
+        $x++;
+    }
+    return $ins2;
+}
 
 function mining_process($db_object, $min_support, $min_confidence, $start_date, $end_date, $id_process){
     //remove reset truncate (change to log mode)

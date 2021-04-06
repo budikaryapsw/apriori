@@ -6,9 +6,34 @@ if (!isset($_SESSION['apriori_parfum_id'])) {
 
 include_once "database.php";
 include_once "fungsi.php";
+include_once "mining.php";
 include_once "import/excel_reader2.php";
 ?>
+<?php
+$db_object = new database();
+// function get_produk_to_in($produk){
+//     $ex = explode(",", $produk);
+//     //$temp = "";
+//     for ($i=0; $i < count($ex); $i++) { 
 
+//         $jml_key = array_keys($ex, $ex[$i]);
+//         if(count($jml_key)>1){
+//             unset($ex[$i]);
+//         }
+
+//         //$temp = $ex[$i];
+//     }
+//     return implode(",", $ex);
+// }
+// if (isset($_POST['submit'])) {
+// 	$can_process = true;
+// 	if($can_processa){
+// 		$tgl = $_POST['tanggal'];
+// 		$hasil= mining_grafik($db_object,$tgl);
+		
+// 	}
+// }
+?>
 
 <html lang="en">
  <?php include "header.php";?>
@@ -19,7 +44,7 @@ include_once "import/excel_reader2.php";
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Grafik Transaksi <small></small></h3>
+                <h3>Grafik Transaksi Hasilnya taruh sini<small></small></h3>
               </div>
 
               <div class="title_right">
@@ -42,7 +67,8 @@ include_once "import/excel_reader2.php";
                     <div class="col-md-12 col-sm-12 ">
                     <div class="x_panel">
                       <div class="x_title">
-                        <h2>Menampilkan <small>Grafik Transaksi</small></h2>
+					  <?php echo $hasil;?>
+                        <h2>Menampilkan<small>Grafik Transaksi</small></h2>
                           <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                             <li><a class="close-link"><i class="fa fa-close"></i></a></li>
@@ -51,91 +77,28 @@ include_once "import/excel_reader2.php";
                           </div>
                 <div class="x_content">
                   <br />
-        <!--UPLOAD EXCEL FORM-->
-		<form method="post" enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left" action="">
+        
+		<form enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left" action="#">
 			<div class="form-group">
                 <label>Tanggal: </label>
                 <div class="input-group">
                 <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
                 </div>
-                <input type="date" class="form-control" name="tanggal">
-				<input type="submit" value="Tampilkan">
-				</div><!-- /.input group -->
-            </div><!-- /.form group -->
+                <input type="date" id="tanggal" class="form-control" value="<?php echo $_POST['tanggal']; ?>" name="tanggal">
+				
+				<!-- <input type="submit" value="Tampilkan"> -->
+				<a href="#" class="btn btn-primary" onclick="getData()">Tampilkan</a>
+				</div>
+            </div>
+		</form>
 			</br>
 				</div>	
-					<div style="width: 800px;margin: 0px auto;">
-		<canvas id="mybarChart"></canvas
-
-	<br/>
-	<br/>
-	<script>
-		var ctx = document.getElementById("mybarChart").getContext('2d');
-		var myChart = new Chart(ctx, {
-			type: 'bar',
-			data: {
-				labels: ["Teh", "Gula", "Roti", "Susu"],
-				datasets: [{
-					label: '',
-					data: [
-					<?php 
-					if(isset($_GET['tanggal'])){
-					$tgl = $_GET['tanggal'];
-					$jumlah_teknik = mysqli_query($koneksi,"select * from transaksi where transaction_date='$tgl' and produk LIKE '%teh%'");
-					echo mysqli_num_rows($jumlah_teknik);}
-					
-					?>, 
-					
-					<?php
-					if(isset($_GET['tanggal'])){
-					$tgl = $_GET['tanggal'];
-					$jumlah_ekonomi = mysqli_query($koneksi,"select * from transaksi where transaction_date='$tgl' and produk LIKE '%gula%'");
-					echo mysqli_num_rows($jumlah_ekonomi);}
-					?>, 
-					<?php 
-					if(isset($_GET['tanggal'])){
-					$tgl = $_GET['tanggal'];
-					$jumlah_fisip = mysqli_query($koneksi,"select * from transaksi where transaction_date='$tgl' and produk LIKE '%Roti%'");
-					echo mysqli_num_rows($jumlah_fisip);}
-					?>, 
-					<?php 
-					if(isset($_GET['tanggal'])){
-					$tgl = $_GET['tanggal'];
-					$jumlah_pertanian = mysqli_query($koneksi,"select * from transaksi where transaction_date='$tgl' and produk LIKE '%susu%'");
-					echo mysqli_num_rows($jumlah_pertanian);}
-					?>
-					],
-					backgroundColor: [
-					'rgba(255, 99, 132, 0.2)',
-					'rgba(54, 162, 235, 0.2)',
-					'rgba(255, 206, 86, 0.2)',
-					'rgba(75, 192, 192, 0.2)'
-					],
-					borderColor: [
-					'rgba(255,99,132,1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(255, 206, 86, 1)',
-					'rgba(75, 192, 192, 1)'
-					],
-					borderWidth: 1
-				}]
-			},
-			options: {
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero:true
-						}
-					}]
-				}
-			}
-		});
-	</script>
-
-
+					<div style="width: 800px;margin: 0px auto;" id="canvas_father">
+		<canvas id="mybarCharta"></canvas>
 
 	
+	<br/>
             </div>	
 		
 		</div>
@@ -155,22 +118,108 @@ include_once "import/excel_reader2.php";
 
 
 
+<script>
+	
+	
+	function getData(){
+		var dataPointsA = []
+		
+		
+		var tgl = $('#tanggal').val();
+		$.ajax({
+			url: 'cek_grafik.php',
+			data: 'tanggal='+tgl,
+			type: 'POST',
+			dataType: 'JSON',
+			success: function(data){
+				console.log(data);
+				var label = [];
+				var value = [];
+				var warna=[];
+				const r = Math.round (Math.random () * 255);
+				const g = Math.round (Math.random () * 255);
+				const b = Math.round (Math.random () * 255);
+				
+				var warna1=[
+					"#FF0000",//red
+					"#FFD700",//gold
+					"#7CFC00",//hijaumuda
 
-<?php
-function get_produk_to_in($produk){
-    $ex = explode(",", $produk);
-    //$temp = "";
-    for ($i=0; $i < count($ex); $i++) { 
+					"#FF8C00",
+					"#808000",//olive
+					"#00FFFF",   //cyan
 
-        $jml_key = array_keys($ex, $ex[$i]);
-        if(count($jml_key)>1){
-            unset($ex[$i]);
-        }
+					"#008080",//teal
+					"#0000FF"   ,//ungu
+					"#FF00FF",//fuchsia
 
-        //$temp = $ex[$i];
+					"#000000",    //black     
+					"#A52A2A",//brown
+					"#2E8B57",
+					"#00FF7F",//hijau biru
+
+					"#FA8072",
+					"#228B22",
+
+					"#40E0D0",
+					"#000080",
+					"#FF00FF",
+
+					"#2F4F4F",
+					"#D2691E",
+					"#B22222",
+				];
+				for (var i in data) {
+					label.push(data[i].item);
+					value.push(data[i].jumlah);
+					warna.push(dynamicColors());
+				}
+				
+				$('#mybarCharta').remove();
+				$('#canvas_father').append('<canvas id="mybarCharta"></canvas>');
+				var ctx = document.getElementById('mybarCharta').getContext('2d');
+
+				var chart = new Chart(ctx, {
+					type: 'bar',
+					data: {
+						labels: label,
+						datasets: [{
+							label: 'Jumlah Produk',
+							backgroundColor: warna,
+							// borderColor: dynamicColors(),
+							data: value
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+					}
+				});
+				
+			}
+		});
+		// console.log(tgl);
+	}
+
+	function getRandomColor() {
+		var letters = '0123456789ABCDEF'.split('');
+		var color = '#';
+		for (var i = 0; i < 6; i++ ) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
     }
-    return implode(",", $ex);
-}
+	var dynamicColors = function() {
+		var r = Math.floor(Math.random() * 255);
+		var g = Math.floor(Math.random() * 255);
+		var b = Math.floor(Math.random() * 255);
+		return "rgb(" + r + "," + g + "," + b + ")";
+	}
+</script>
 
-?>
   

@@ -69,3 +69,8 @@
     <script src="assets/template/back/vendors/jszip/dist/jszip.min.js"></script>
     <script src="assets/template/back/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="assets/template/back/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+    <script>
+    $('#id-date-range-picker-1').daterangepicker();
+    $('#id-date-range-picker-2').daterangepicker();
+    </script>

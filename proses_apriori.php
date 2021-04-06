@@ -214,7 +214,7 @@ else {
                             <i class="fa fa-calendar"></i>
                         </div>
                         <input type="text" class="form-control pull-right" name="range_tanggal"
-                               id="id-date-range-picker-1" required="" placeholder="Date range" 
+                               id="id-date-range-picker-2" required="" placeholder="Date range" 
                                value="<?php echo $_POST['range_tanggal']; ?>">
                     </div><!-- /.input group -->
                 </div><!-- /.form group -->
