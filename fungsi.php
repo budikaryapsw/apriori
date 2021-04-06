@@ -1,7 +1,7 @@
 <?php
 
 function can_access_menu($menu){
-    if($_SESSION['apriori_parfum_level']==2 ){
+    if($_SESSION['apriori_parfum_level']==2 & ($menu=='hasil_rule' || $menu=='view_rule'||$menu=='grafik_transaksi' ||$menu=='hasil')){
         return true;
     }
     if($_SESSION['apriori_parfum_level']==1){
