@@ -72,11 +72,11 @@ function is_exist_variasi_itemset($array_item1, $array_item2, $item1, $item2) {
     
     return false;
 }
-function mining_grafik($db_object,$start_date){
+function mining_grafik($db_object,$start_date,$end_date){
     // $output=array();
     $ins2=array();
     $sql_trans = "SELECT * FROM transaksi 
-        WHERE transaction_date = '$start_date' ";
+        WHERE transaction_date between '$start_date' and '$end_date' ";
     $result_trans = $db_object->db_query($sql_trans);
     $dataTransaksi = $item_list = array();
     $jumlah_transaksi = $db_object->db_num_rows($result_trans);

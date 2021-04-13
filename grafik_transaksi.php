@@ -80,17 +80,31 @@ $db_object = new database();
         
 		<form enctype="multipart/form-data" data-parsley-validate class="form-horizontal form-label-left" action="#">
 			<div class="form-group">
-                <label>Tanggal: </label>
+                <label>Dari Tanggal: </label>
                 <div class="input-group">
                 <div class="input-group-addon">
                 <i class="fa fa-calendar"></i>
                 </div>
                 <input type="date" id="tanggal" class="form-control" value="<?php echo $_POST['tanggal']; ?>" name="tanggal">
 				
-				<!-- <input type="submit" value="Tampilkan"> -->
-				<a href="#" class="btn btn-primary" onclick="getData()">Tampilkan</a>
+				
 				</div>
             </div>
+			<div class="form-group">
+                <label>Hingga Tanggal: </label>
+                <div class="input-group">
+                <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+                </div>
+                <input type="date" id="tanggal2" class="form-control" value="<?php echo $_POST['tanggal2']; ?>" name="tanggal2">
+				
+				<!-- <input type="submit" value="Tampilkan"> -->
+				
+				</div>
+            </div>
+			<div class="form-group">
+			<a href="#" class="btn btn-primary" onclick="getData()">Tampilkan</a>
+			</div>
 		</form>
 			</br>
 				</div>	
@@ -126,9 +140,10 @@ $db_object = new database();
 		
 		
 		var tgl = $('#tanggal').val();
+		var tgl2 = $('#tanggal2').val();
 		$.ajax({
 			url: 'cek_grafik.php',
-			data: 'tanggal='+tgl,
+			data: 'tanggal='+tgl+'&tanggal2='+tgl2,
 			type: 'POST',
 			dataType: 'JSON',
 			success: function(data){
