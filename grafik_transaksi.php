@@ -44,7 +44,7 @@ $db_object = new database();
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Grafik Transaksi Hasilnya taruh sini<small></small></h3>
+                <h3>Grafik Transaksi<small></small></h3>
               </div>
 
               <div class="title_right">
@@ -109,12 +109,11 @@ $db_object = new database();
 			</br>
 				</div>	
 					<div style="width: 800px;margin: 0px auto;" id="canvas_father">
-		<canvas id="mybarCharta"></canvas>
-
-	
-	<br/>
-            </div>	
-		
+						<canvas id="mybarCharta"></canvas>
+            		</div>	
+			<br/>
+			<div id="palinglaku"></div>
+			<div id="kuranglaku"></div>
 		</div>
         </div>
     </div>
@@ -134,7 +133,12 @@ $db_object = new database();
 
 <script>
 	
-	
+	function endProp( mathFunc, array, property ) {
+		return Math[ mathFunc ].apply(array, array.map(function ( item ) {
+			return item[ property ];
+		}));
+	}
+
 	function getData(){
 		var dataPointsA = []
 		
@@ -147,9 +151,15 @@ $db_object = new database();
 			type: 'POST',
 			dataType: 'JSON',
 			success: function(data){
-				console.log(data);
+				var hasil=data;
+				console.log(hasil);
+				// var nenen=Math.max.apply(Math, array.map(function(o) { return o.item; }));
+				// var nenen =data.reduce((acc, shot) => acc = acc > shot.item ? acc : shot.item, 0);
+				// var maxY = endProp( "max", hasil, "item" ); // 8.389
+			
 				var label = [];
 				var value = [];
+				var arr=[];
 				var warna=[];
 				const r = Math.round (Math.random () * 255);
 				const g = Math.round (Math.random () * 255);
@@ -184,12 +194,34 @@ $db_object = new database();
 					"#D2691E",
 					"#B22222",
 				];
+				var lowest = Number.POSITIVE_INFINITY;
+				var namelowest;
+				var namehighest;
+				var highest = Number.NEGATIVE_INFINITY;
+				var tmp;
 				for (var i in data) {
 					label.push(data[i].item);
 					value.push(data[i].jumlah);
+					arr.push({item: data[i].item, jumlah: data[i].jumlah});
+					tmp = data[i].jumlah;
+					if (tmp < lowest) {lowest = tmp;namelowest=data[i].item};
+					if (tmp > highest) {highest = tmp;namehighest=data[i].item};
 					warna.push(dynamicColors());
 				}
 				
+				
+				
+			 	var maxY = Math.max.apply(Math, arr.map(function(o) { return o.item; })); // 8.389
+				// var maxY=return array_reduce($arr, function ($a, $b) {
+				// 				return $a ? ($a['jumlah'] > $b['jumlah'] ? $a : $b) : $b;
+				// 			});
+				var minY = endProp( "min", arr, "item" );
+				// var maxY =arr.reduce((acc, shot) => acc = acc > shot.item ? acc : shot.item, 0);
+				console.log(namehighest);
+				console.log(namelowest);
+				// console.log(minY);
+				document.getElementById("palinglaku").innerHTML = "Produk Paling Laku : "+namehighest;
+				document.getElementById("kuranglaku").innerHTML = "Produk Kurang Laku : "+namelowest;
 				$('#mybarCharta').remove();
 				$('#canvas_father').append('<canvas id="mybarCharta"></canvas>');
 				var ctx = document.getElementById('mybarCharta').getContext('2d');

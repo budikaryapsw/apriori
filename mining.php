@@ -74,6 +74,10 @@ function is_exist_variasi_itemset($array_item1, $array_item2, $item1, $item2) {
 }
 function mining_grafik($db_object,$start_date,$end_date){
     // $output=array();
+    $nilaipalinglaku=0;
+    $nilaipalingtidaklaku=100;
+    $namapalinglaku="";
+    $namapalingtidaklaku="";
     $ins2=array();
     $sql_trans = "SELECT * FROM transaksi 
         WHERE transaction_date between '$start_date' and '$end_date' ";
@@ -131,6 +135,14 @@ function mining_grafik($db_object,$start_date,$end_date){
         // echo "</tr>";
         $ins2[$x]['item']=$item;  
         $ins2[$x]['jumlah']=$jumlah; 
+        if($jumlah>$nilaipalinglaku){
+            $nilaipalinglaku=$jumlah;
+            $namapalinglaku=$item;
+        }
+        if($jumlah<$nilaipalingtidaklaku){
+            $nilaipalingtidaklaku=$jumlah;
+            $namapalingtidaklaku=$item;
+        }
         $x++;
     }
     return $ins2;
