@@ -238,6 +238,7 @@ $db_object = new database();
 						}]
 					},
 					options: {
+						indexAxis: 'y',
 						scales: {
 							yAxes: [{
 								ticks: {
