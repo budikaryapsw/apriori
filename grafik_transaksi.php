@@ -227,7 +227,7 @@ $db_object = new database();
 				var ctx = document.getElementById('mybarCharta').getContext('2d');
 
 				var chart = new Chart(ctx, {
-					type: 'bar',
+					type: 'horizontalBar',
 					data: {
 						labels: label,
 						datasets: [{
@@ -238,7 +238,7 @@ $db_object = new database();
 						}]
 					},
 					options: {
-						indexAxis: 'y',
+						
 						scales: {
 							yAxes: [{
 								ticks: {
