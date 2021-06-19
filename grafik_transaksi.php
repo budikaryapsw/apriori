@@ -208,7 +208,9 @@ $db_object = new database();
 					if (tmp > highest) {highest = tmp;namehighest=data[i].item};
 					warna.push(dynamicColors());
 				}
-				
+				const lastItem = data[data.length - 1].item;
+				const firstItem = $(data.item).first();
+				console.log(firstItem);
 				
 				
 			 	var maxY = Math.max.apply(Math, arr.map(function(o) { return o.item; })); // 8.389
@@ -217,17 +219,17 @@ $db_object = new database();
 				// 			});
 				var minY = endProp( "min", arr, "item" );
 				// var maxY =arr.reduce((acc, shot) => acc = acc > shot.item ? acc : shot.item, 0);
-				console.log(namehighest);
-				console.log(namelowest);
+				// console.log(namehighest);
+				// console.log(namelowest);
 				// console.log(minY);
 				document.getElementById("palinglaku").innerHTML = "Produk Paling Laku : "+namehighest;
-				document.getElementById("kuranglaku").innerHTML = "Produk Kurang Laku : "+namelowest;
+				document.getElementById("kuranglaku").innerHTML = "Produk Kurang Laku : "+lastItem;
 				$('#mybarCharta').remove();
 				$('#canvas_father').append('<canvas id="mybarCharta"></canvas>');
 				var ctx = document.getElementById('mybarCharta').getContext('2d');
 
 				var chart = new Chart(ctx, {
-					type: 'bar',
+					type: 'horizontalBar',
 					data: {
 						labels: label,
 						datasets: [{
@@ -243,7 +245,12 @@ $db_object = new database();
 								ticks: {
 									beginAtZero: true
 								}
-							}]
+							}],
+							xAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}],
 						}
 					}
 				});

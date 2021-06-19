@@ -145,7 +145,20 @@ function mining_grafik($db_object,$start_date,$end_date){
         }
         $x++;
     }
-    return $ins2;
+
+    $price = array();
+    $x=1;
+    foreach ($ins2 as $key => $row)
+    {
+        $price[$x]['jumlah'] = $row['jumlah'];
+        $price[$x]['item'] = $row['item'];
+        $x++;
+    }
+    array_multisort($price, SORT_DESC, $ins2);
+    $output = array_slice($price, 0, 20); 
+    // var_dump(json_encode($output));
+    // die();
+    return $output;
 }
 
 function mining_process($db_object, $min_support, $min_confidence, $start_date, $end_date, $id_process){
