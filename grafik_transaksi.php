@@ -240,6 +240,7 @@ $db_object = new database();
 						}]
 					},
 					options: {
+						
 						scales: {
 							yAxes: [{
 								ticks: {
